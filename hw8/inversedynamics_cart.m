@@ -1,25 +1,43 @@
-function [Fx, Fy] = inversedynamics_cart(theta, ddsX, ddsY, domega, par)
+function [Fx,Fy]=inversedynamics_cart(theta,ddsX,ddsY,domega,par)
+%This function calculates forces Fx and Fy as functions of given motion
+%(not checking for violation of constraints!)
+%par: parameter struct containing length and mass properties of the cart
+%
+%Author: H. Vallery, October 2014
 
-if length(theta) > 1
-    theta = reshape(theta, [1, 1, length(theta)]);
-    ddsX = reshape(ddsX, [1, 1, length(ddsX)]);
-    ddsY = reshape(ddsY, [1, 1, length(ddsY)]);
-    domega = reshape(domega, [1, 1, length(domega)]);
-end
+%----------------------------
+%extract parameters:
+%----------------------------
 
-m = par.m*ones(size(theta));
-a = 2*par.Is/par.length_cart;
+%mass parameters of the cart:
+m=par.m;% mass of cart
+Is=par.Is;% moment of inertia about center of mass
 
-A = [  m, 0*m, -a*sin(theta);
-     0*m,   m,  a*cos(theta)];
-B = [cos(theta), -2*sin(theta);
-     sin(theta),  2*cos(theta)];
-q = [ddsX; ddsY; domega];
+%geometry of the cart:
+l=par.length_cart;%[m], length of the cart
 
-Fx = zeros(length(theta), 1);
-Fy = zeros(length(theta), 1);
-for i = 1:length(theta)
-    F = B(:, :, i)\A(:, :, i)*q(:, :, i);
-    Fx(i) = F(1);
-    Fy(i) = F(2);
-end
+%----------------------------
+%Lagrange:
+%----------------------------
+A=[m 0 -2*Is/l*sin(theta);
+    0 m 2*Is/l*cos(theta);
+    sin(theta) -cos(theta) l/2];
+
+%b=[ Fx*cos(theta) - 2*Fy*sin(theta);
+%    Fx*sin(theta)+2*Fy*cos(theta);
+%    -dsX*omega*cos(theta)-dsY*omega*sin(theta)];
+
+%re-sort the equations to solve for Fx and Fy:
+ddq=[ddsX;ddsY;domega];
+
+AF=[cos(theta) -2*sin(theta);
+    sin(theta) 2*cos(theta)];
+
+bF=A(1:2,:)*ddq;
+
+F=AF\bF;
+Fx=F(1);
+Fy=F(2);
+
+
+

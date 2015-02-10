@@ -39,8 +39,8 @@ dsX=x(4);
 dsY=x(5);
 omega=x(6);
 
-dt = 0.01;
-n = round(t/dt) + 1;
+Ts = 0.01;
+n = min(round(t/Ts) + 1, par.N);
 Fx = par.F(n, 1);
 Fy = par.F(n, 2);
 

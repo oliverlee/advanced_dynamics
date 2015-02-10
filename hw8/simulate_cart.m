@@ -1,3 +1,4 @@
+%%
 %This script simulates a model cart connected to the ceiling by a linear
 %spring, as treated in homework assignments of the course "Advanced
 %Dynamics" at TUD. 
@@ -8,9 +9,12 @@
 %define constant parameters:
 %----------------------------
 Ts=.01;%[s], sampling time
-endtime=5;%[s] %end time of integration
-par.Ts_anim=.04;%[s] pause between frames during animation (can be used for slow motion if larger than Ts)
-
+N = 500;
+endtime = (N - 1)*Ts;
+% % endtime=5 - Ts;%[s] %end time of integration
+% endtime=5 - Ts;%[s] %end time of integration
+par.Ts_anim=.01;%[s] pause between frames during animation (can be used for slow motion if larger than Ts)
+par.N = N;
 
 %geometry:
 
@@ -22,9 +26,11 @@ par.m=20;%[kg], mass of the cart
 par.Is=par.m*1/12*(par.length_cart^2+par.width_cart^2);%[kgm^2] moment of inertia of the cart about the z axis
 
 % calculate forces
-dt = 0.01;
-N = 500;
-t = (0:(N - 1))*dt;
+% dt = 0.01;
+% N = endtime / dt;
+% % N = 500;
+% t = (0:(N - 1))*dt;
+t = 0:Ts:endtime;
 
 f = 2;
 v0 = 20;
@@ -39,17 +45,24 @@ domega_t = -(2*pi*f)^2 * theta_t;
 dsX_t = -v0*ones(size(t));
 ddsX_t = zeros(size(t));
 
-dsY_t = l/2*omega_t + dsX_t.*sin(theta_t);
+dsY_t = (l/2*omega_t + dsX_t.*sin(theta_t))./cos(theta_t);
 ddsY_t = -1./cos(theta_t) .* (-dsX_t.*omega_t.*cos(theta_t) -...
     dsY_t.*omega_t.*sin(theta_t) - l/2.*domega_t - sin(theta_t).*ddsX_t);
 
-[Fx, Fy] = inversedynamics_cart(theta_t, ddsX_t, ddsY_t, domega_t, par);
+% [Fx, Fy] = inversedynamics_cart(theta_t, ddsX_t, ddsY_t, domega_t, par);
+
+FxFy=zeros(length(tvec),2);
+for index=1:length(tvec)
+[Fxvec,Fyvec]=inversedynamics_cart(theta_t(index),ddsX_t(index),ddsY_t(index),domega_t(index),par);
+FxFy(index,:)=[Fxvec,Fyvec];
+end
+
 disp(sprintf('Fx(end) = %g', Fx(end)))
 disp(sprintf('Fy(end) = %g', Fy(end)))
 
 F = [Fx, Fy];
-par.F = F;
-
+par.F = FxFy;
+%%
 
 %----------------------------
 %set initial conditions:
@@ -57,15 +70,16 @@ par.F = F;
 
 %Cartesian positions of the cart's center of mass:
 sX=0;
-sY=.2;
+sY=0;
 %corresponding velocities:
 dsX = -v0;
-dsY = pi^2*2/8;
+dsY = pi^2/2;
 %orientation of the cart with
 %respect to the inertial N frame (XYZ):
 theta = 0;
 %angular velocity 
 omega = pi/8 * 2*pi*f;
+% dsY = (dsX*sin(thetaclo) + l/2*omega)/cos(theta);
 
 %----------------------------
 %integrate:
@@ -74,17 +88,17 @@ x0=[sX,sY,theta,dsX,dsY,omega];%vector of initial conditions:
 options = odeset('AbsTol',1e-10,'RelTol',1e-8);
 %[t,y]=ode45(@cart_equationsofmotion,[0:Ts:endtime],x0,options,par); 
 %[t,y] = Integrate_EulersMethod(@cart_equationsofmotion,[0,endtime],Ts, x0,par);
-[t,y] = Integrate_ModifiedEulerMethod(@cart_equationsofmotion,[0,endtime-Ts],Ts, x0,par);
+[t,y] = Integrate_ModifiedEuler(@cart_equationsofmotion,[0,endtime],Ts, x0,par);
 %[t,y] = Integrate_RungeKutta2(@cart_equationsofmotion,[0,endtime],Ts, x0,par);
 %[t,y] = Integrate_RungeKutta4(@cart_equationsofmotion,[0,endtime],Ts, x0,par);
-
 
 %extract the generalized coordinates as time series:
 qmatrix=y(:,1:3);
 
 x_sim = y(end, 1);
 x_mdl = -v0*(N-1)*dt;
-disp(sprintf('error in sX: %g - %g = %g', x_sim, x_mdl, x_sim - x_mdl))
+e = x_sim - x_mdl;
+disp(sprintf('error in sX: %g - %g = %g', x_sim, x_mdl, e))
 
 % calculate constraint force:
 % given the Lagrange equations:
@@ -95,7 +109,7 @@ disp(sprintf('error in sX: %g - %g = %g', x_sim, x_mdl, x_sim - x_mdl))
 
 
 dy = zeros(size(y));
-for i = 1:length(y) - 1
+for i = 1:size(y, 1) - 1
     dy(i, :) = cart_equationsofmotion(t(i), y(i, :), par);
 end
 

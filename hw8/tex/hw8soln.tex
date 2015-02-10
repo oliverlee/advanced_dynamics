@@ -851,7 +851,7 @@ Given the analytic form for the expressions of $s_X(t)$ and $\theta(t)$, we can
 take the time derivatives to find expression for $\dot{s}_X(t)$ and $\omega(t)$
 which are:
 \begin{equation*}
-    \dot{s}_X(t) = -v_0 \qquad \omega(t) = \frac{\pi}{8} 2\pi f cos(2\pi ft)
+    \dot{s}_X(t) = -v_0 \qquad \omega(t) = \frac{\pi}{8} 2\pi f \cos(2\pi ft)
 \end{equation*}
 These equations give the following initial conditions:
 \begin{align*}
@@ -863,7 +863,7 @@ These equations give the following initial conditions:
 Taking $s_Y(t_0) = 0.2$, the initial condition of $\dot{s}_Y(t_0)$ can be found
 using the constraint equation:
 \begin{equation*}
-    \phi = \dot{s}_X sin(\theta) - \dot{s}_Y cos(\theta) + \frac{1}{2}l\omega
+    \phi = \dot{s}_X \sin(\theta) - \dot{s}_Y \cos(\theta) + \frac{1}{2}l\omega
         = 0
 \end{equation*}
 As this constraint is always satisfied, substituting values at $t = t_0$ gives:
@@ -888,39 +888,39 @@ must be re-arranged so that the forces $F_x$ and $F_y$ are on the left hand
 side. Starting with the cart equations of motion:
 \begin{equation*}
     \begin{pmatrix}
-        m & 0 & \frac{-2 I_s}{l}sin(\theta) \\
-        0 & m & \frac{2 I_s}{l}cos(\theta) \\
-        sin(\theta) & -cos(\theta) & \frac{l}{2} \\
+        m & 0 & \frac{-2 I_s}{l}\sin(\theta) \\
+        0 & m & \frac{2 I_s}{l}\cos(\theta) \\
+        \sin(\theta) & -\cos(\theta) & \frac{l}{2} \\
     \end{pmatrix}
     \begin{pmatrix}
         \ddot{s}_X \\ \ddot{s}_Y \\ \dot{\omega}
     \end{pmatrix}
     =
     \begin{pmatrix}
-        F_x cos(\theta) - 2 F_y sin(\theta) \\
-        F_x sin(\theta) + 2 F_y cos(\theta) \\
-        -\dot{s}_X \omega cos(\theta) - \dot{s}_Y \omega sin(\theta)
+        F_x \cos(\theta) - 2 F_y \sin(\theta) \\
+        F_x \sin(\theta) + 2 F_y \cos(\theta) \\
+        -\dot{s}_X \omega \cos(\theta) - \dot{s}_Y \omega \sin(\theta)
     \end{pmatrix}
 \end{equation*}
 We can ignore the equation of motion for $\dot{\omega}$ and separate the $F_x$
 and $F_y$ terms from the forcing vector:
 \begin{align*}
     \begin{pmatrix}
-        m & 0 & \frac{-2 I_s}{l}sin(\theta) \\
-        0 & m & \frac{2 I_s}{l}cos(\theta) \\
+        m & 0 & \frac{-2 I_s}{l}\sin(\theta) \\
+        0 & m & \frac{2 I_s}{l}\cos(\theta) \\
     \end{pmatrix}
     \begin{pmatrix}
         \ddot{s}_X \\ \ddot{s}_Y \\ \dot{\omega}
     \end{pmatrix}
     &=
     \begin{pmatrix}
-        F_x cos(\theta) - 2 F_y sin(\theta) \\
-        F_x sin(\theta) + 2 F_y cos(\theta) \\
+        F_x \cos(\theta) - 2 F_y \sin(\theta) \\
+        F_x \sin(\theta) + 2 F_y \cos(\theta) \\
     \end{pmatrix} \\
     &=
     \begin{pmatrix}
-        cos(\theta) & -2 sin(\theta) \\
-        sin(\theta)  & 2 cos(\theta) \\
+        \cos(\theta) & -2 \sin(\theta) \\
+        \sin(\theta)  & 2 \cos(\theta) \\
     \end{pmatrix}
     \begin{pmatrix}
         Fx \\ Fy
@@ -934,12 +934,12 @@ its inverse to obtain an expression for $F_x$ and $F_y$:
     \end{pmatrix}
     =
     \begin{pmatrix}
-        cos(\theta) & -2 sin(\theta) \\
-        sin(\theta)  & 2 cos(\theta) \\
+        \cos(\theta) & -2 \sin(\theta) \\
+        \sin(\theta)  & 2 \cos(\theta) \\
     \end{pmatrix}^{-1}
     \begin{pmatrix}
-        m & 0 & \frac{-2 I_s}{l}sin(\theta) \\
-        0 & m & \frac{2 I_s}{l}cos(\theta) \\
+        m & 0 & \frac{-2 I_s}{l}\sin(\theta) \\
+        0 & m & \frac{2 I_s}{l}\cos(\theta) \\
     \end{pmatrix}
     \begin{pmatrix}
         \ddot{s}_X \\ \ddot{s}_Y \\ \dot{\omega}
@@ -1022,10 +1022,10 @@ the following equations of motions:
     =
     \frac{2}{4I_s + l^2m} \omega
     \begin{pmatrix}
-        -I_s(sin(2\omega)\dot{s}_X - cos(2\omega)\dot{s}_Y + \dot{s}_Y) \\
-        I_s(cos(2\omega)\dot{s}_X + sin(2\omega)\dot{s}_Y + \dot{s}_X) \\
-        -lm(cos(\omega)\dot{s}_X + sin(\omega)\dot{s}_Y) \\
-        -2I_sm(cos(\omega)\dot{s}_X + sin(\omega)\dot{s}_Y) \\
+        -I_s(\sin(2\omega)\dot{s}_X - \cos(2\omega)\dot{s}_Y + \dot{s}_Y) \\
+        I_s(\cos(2\omega)\dot{s}_X + \sin(2\omega)\dot{s}_Y + \dot{s}_X) \\
+        -lm(\cos(\omega)\dot{s}_X + \sin(\omega)\dot{s}_Y) \\
+        -2I_sm(\cos(\omega)\dot{s}_X + \sin(\omega)\dot{s}_Y) \\
     \end{pmatrix}
 \end{equation*}
 
@@ -1036,7 +1036,7 @@ forces in the $x$ and $y$ directions:
     F_y = \lambda \frac{\partial{\phi}}{\partial{\dot{y}_Y}}
 \end{equation*}
 \begin{equation*}
-    F_x = \lambda sin(\theta) \qquad F_y = -\lambda cos(\theta)
+    F_x = \lambda \sin(\theta) \qquad F_y = -\lambda \cos(\theta)
 \end{equation*}
 The constraint forces are then calculated in \autoref{lst:simcart}. \\
 
